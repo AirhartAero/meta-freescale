@@ -275,8 +275,8 @@ do_install () {
 
 ALLOW_EMPTY_${PN} = "1"
 
-FILES_libclc-imx = "${libdir}/libCLC${SOLIBS}"
-FILES_libclc-imx-dev = "${includedir}/CL ${libdir}/libCLC${SOLIBSDEV}"
+FILES:libclc-imx = "${libdir}/libCLC${SOLIBS} ${includedir}/CL/cl_viv_vx_ext.h"
+FILES:libclc-imx-dev = "${includedir}/CL ${libdir}/libCLC${SOLIBSDEV}"
 
 # libEGL.so is used by some demo apps from Freescale
 INSANE_SKIP_libegl-imx += "dev-so"
