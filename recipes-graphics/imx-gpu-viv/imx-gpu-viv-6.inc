@@ -30,6 +30,7 @@ EXTRA_PROVIDES_append_imxgpu3d = " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'virtual/libgl', \
        bb.utils.contains('DISTRO_FEATURES',     'x11', 'virtual/libgl', \
                                                        '', d), d)} \
+    virtual/libgl \
     virtual/libgles1 \
     virtual/libgles2 \
 "
