@@ -305,6 +305,7 @@ RDEPENDS_libopenvx-imx = "libnn-imx"
 
 FILES_libgl-imx = "${libdir}/libGL${REALSOLIBS}"
 FILES_libgl-imx-dev = "${libdir}/libGL${SOLIBSDEV} ${includedir}/GL"
+INSANE_SKIP_libgl-imx += "file-rdeps"
 
 # libEGL needs to open libGLESv1.so
 INSANE_SKIP_libgles1-imx += "dev-so"
