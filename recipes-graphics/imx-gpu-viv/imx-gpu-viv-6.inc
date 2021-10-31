@@ -155,6 +155,13 @@ GLES3_HEADER_REMOVALS_mx8m   = "gl32.h"
 GLES3_HEADER_REMOVALS_mx8mm  = "gl31.h gl32.h"
 GLES3_HEADER_REMOVALS_mx8qxp = ""
 GLES3_HEADER_REMOVALS_mx8qm  = ""
+IMX_SOC        = "IMX_SOC_NOT_SET"
+IMX_SOC_mx8qm  = "mx8qm"
+IMX_SOC_mx8mp  = "mx8mp"
+IMX_SOC_mx8mq  = "mx8mq"
+IMX_SOC_mx8qxp = "mx8qxp"
+IMX_SOC_mx8mn  = "mx8mn"
+IMX_SOC_mx8ulp = "mx8ulp"
 
 do_install () {
     install -d ${D}${libdir}
@@ -168,6 +175,10 @@ do_install () {
 
     # Use vulkan header from vulkan-headers recipe to support vkmark
     rm -rf ${D}${includedir}/vulkan/
+
+    if [ -d ${S}/gpu-core/usr/lib/${IMX_SOC} ]; then
+        cp -r ${S}/gpu-core/usr/lib/${IMX_SOC}/* ${D}${libdir}
+    fi
 
     install -d ${D}${libdir}/pkgconfig
     if ${HAS_GBM}; then
