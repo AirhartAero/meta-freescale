@@ -61,7 +61,8 @@ inherit fsl-eula-unpack features_check
 
 REQUIRED_DISTRO_FEATURES_mx8 = "wayland"
 
-SRC_URI = "${FSL_MIRROR}/${BPN}-${PV}.bin;fsl-eula=true"
+SRC_URI = "${FSL_MIRROR}/${BPN}-${PV}.bin;fsl-eula=true \
+           file://imx_icd.json"
 
 PACKAGECONFIG ?= ""
 
@@ -164,7 +165,8 @@ IMX_SOC_mx8mn  = "mx8mn"
 IMX_SOC_mx8ulp = "mx8ulp"
 
 LIBVULKAN_VERSION_MAJOR = "1"
-LIBVULKAN_VERSION = "${LIBVULKAN_VERSION_MAJOR}.1.6"
+LIBVULKAN_VERSION       = "${LIBVULKAN_VERSION_MAJOR}.2.1"
+LIBVULKAN_API_VERSION   = "${LIBVULKAN_VERSION_MAJOR}.2.182"
 
 do_install () {
     install -d ${D}${libdir}
@@ -248,6 +250,17 @@ do_install () {
         rm ${D}${libdir}/libvulkan.so.$MAJOR ${D}${libdir}/libvulkan.so
         ln -s libvulkan_VSI.so.$FULL ${D}${libdir}/libvulkan_VSI.so.$MAJOR
         ln -s libvulkan_VSI.so.$FULL ${D}${libdir}/libvulkan_VSI.so
+        if [ -z "${PACKAGES_VULKAN}" ]; then
+            set -f
+            for f in ${FILES:libvulkan-imx} ${FILES:libvulkan-imx-dev}; do
+                set +f
+                rm -rf ${D}$f
+            done
+        else
+            install -Dm 0644 ${WORKDIR}/imx_icd.json ${D}${sysconfdir}/vulkan/icd.d/imx_icd.json
+            sed -i "s,%libdir%,${libdir}," ${D}${sysconfdir}/vulkan/icd.d/imx_icd.json
+            sed -i "s,%api_version%,${LIBVULKAN_API_VERSION}," ${D}${sysconfdir}/vulkan/icd.d/imx_icd.json
+        fi
     fi
 
     for header in ${GLES3_HEADER_REMOVALS}; do
@@ -304,7 +317,10 @@ FILES_libgbm-imx-dev_mx8       = "${libdir}/pkgconfig/gbm.pc ${includedir}/gbm.h
 RDEPENDS_libgbm-imx_append_mx8 = " libdrm"
 INSANE_SKIP_libgbm-imx += "dev-so"
 
-FILES_libvulkan-imx = "${libdir}/libvulkan_VSI${REALSOLIBS} ${libdir}/libSPIRV_viv${SOLIBS}"
+FILES_libvulkan-imx = "\
+    ${libdir}/libvulkan_VSI${REALSOLIBS} \
+    ${libdir}/libSPIRV_viv${SOLIBS} \
+    ${sysconfdir}/vulkan"
 FILES_libvulkan-imx-dev = "${includedir}/vulkan ${libdir}/libvulkan_VSI${SOLIBSDEV}"
 
 FILES_libopenvx-imx = " \
